@@ -1,0 +1,22 @@
+*, *::after, *::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;
+  background-color: cornflowerblue;
+}
+
+
+input {
+  position: fixed;
+  z-index: 10;
+  top: 20px;
+  left: 20px;;
+}

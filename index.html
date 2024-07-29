@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    *,
+    *::after,
+    *::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow: hidden;
+    }
+
+    body {
+      height: 100vh;
+      background-color: cornflowerblue;
+    }
+  </style>
+</head>
+<body>
+  <canvas id='tutorial'></canvas>
+  <script>
+    const OX = document.body.clientWidth / 2
+    const OY = document.body.clientHeight / 2
+    const sin = Math.sin
+    const cos = Math.cos
+    const PI = Math.PI
+    const PI2 = PI * 2
+    const CELL_SIZE = 20
+    const POINT_RADIUS = 3
+    const MIN_DISTANCE = 200
+    const RANGE = {
+      from: PI / 6,
+      to: (5 * PI) / 6,
+    }
+
+    /* Радиусы */
+    const POINTS = [
+      20, 0, 50, 15, 100, 0, 20, 80, 90, 5, 20, 50, 100
+    ]
+
+    const canvas = document.querySelector('#tutorial')
+    const ctx = canvas.getContext('2d')
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+      canvas.width = document.body.clientWidth
+      canvas.height = document.body.clientHeight
+
+      const ARC_POINTS = [];
+      const RESULT = [];
+      const step = (PI - (2 * RANGE.from)) / POINTS.length
+      let j = 0;
+      for (let i = RANGE.from; i < RANGE.to; i += step) {
+        const d = Boolean(POINTS[j] * CELL_SIZE) ? POINTS[j] * 1.5 : 0;
+        const arcX = OX + cos(i) * MIN_DISTANCE; // Вычисление координаты X на дуге
+        const arcY = OY + sin(i) * -1 * MIN_DISTANCE; // Вычисление координаты Y на дуге
+        ARC_POINTS.push([arcX, arcY]); // Сохранение координат на дуге
+        const dx = arcX + cos(i) * d; // Вычисление конечной координаты X точки
+        const dy = arcY + sin(i) * -1 * d; // Вычисление конечной координаты Y точки
+        RESULT.push([dx, dy]); // Добавление точки в массив результатов
+        j++;
+      }
+
+      ctx.beginPath();
+      ctx.arc(OX, OY, MIN_DISTANCE, PI, 0)
+      ctx.stroke();
+
+      // Рисование точек на дуге
+      ARC_POINTS.forEach(point => {
+        const [x, y] = point;
+        ctx.beginPath();
+        ctx.arc(x, y, POINT_RADIUS, 0, PI2);
+        ctx.fill();
+      });
+
+
+      RESULT.forEach(i => {
+        const [x, y] = i
+        ctx.beginPath();
+        ctx.arc(x, y, POINT_RADIUS, 0, PI2)
+        ctx.fill();
+      })
+
+      for (let i = 0; i < RESULT.length; i++) {
+        ctx.beginPath()
+        ctx.moveTo(ARC_POINTS[i][0], ARC_POINTS[i][1])
+        ctx.lineTo(RESULT[i][0], RESULT[i][1])
+        ctx.stroke();
+      }
+    })
+
+  </script>
+</body>
+</html>
